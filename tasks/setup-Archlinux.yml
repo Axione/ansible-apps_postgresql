@@ -1,16 +1,16 @@
 ---
 - name: Ensure PostgreSQL Python libraries are installed.
-  ansible.builtin.pacman:
+  community.general.pacman:
     name: "{{ postgresql_python_library }}"
     state: present
 
 - name: Ensure PostgreSQL packages are installed.
-  ansible.builtin.pacman:
+  community.general.pacman:
     name: "{{ postgresql_packages }}"
     state: present
 
 - name: Ensure all configured locales are present.
-  ansible.builtin.locale_gen:
+  community.general.locale_gen:
     name: "{{ item }}"
     state: present
   with_items: "{{ postgresql_locales }}"
