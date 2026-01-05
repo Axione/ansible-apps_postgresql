@@ -1,32 +1,56 @@
 ---
-- name: Include tasks to set variables.
+- name: "Include tasks to set variables."
   ansible.builtin.include_tasks: variables.yml
 
-- name: Include special tasks for Archlinux.
+- name: "Include special tasks for Archlinux."
   ansible.builtin.include_tasks: setup-Archlinux.yml
   when: ansible_os_family == 'Archlinux'
-- name: Include special tasks for Archlinux.
+
+- name: "Include special tasks for Debian."
   ansible.builtin.include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
-- name: Include special tasks for Archlinux.
+
+- name: "Include special tasks for Redhat."
   ansible.builtin.include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- name: Initialize.
+- name: "Initialize."
   ansible.builtin.include_tasks: initialize.yml
-- name: Configure.
+
+- name: "Configure."
   ansible.builtin.include_tasks: configure.yml
 
-- name: Ensure PostgreSQL is started and enabled on boot.
+- name: Ensure systemd override directory exists for PostgreSQL
+  ansible.builtin.file:
+    path: "/etc/systemd/system/postgresql.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Override PGDATA environment variable for PostgreSQL systemd service
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/postgresql.service.d/override.conf"
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Service]
+      Environment=
+      Environment=PGDATA={{ postgresql_data_dir }}
+
+- name: "Ensure PostgreSQL is started and enabled on boot."
   ansible.builtin.service:
     name: "{{ postgresql_daemon }}"
     state: "{{ postgresql_service_state }}"
     enabled: "{{ postgresql_service_enabled }}"
+    daemon_reload: true
 
-# Configure PostgreSQL.
-- name: Configure users.
+- name: "Configure users."
   ansible.builtin.import_tasks: users.yml
-- name: Configure databases.
+
+- name: "Configure databases."
   ansible.builtin.import_tasks: databases.yml
-- name: Configure users privileges.
+
+- name: "Configure users privileges."
   ansible.builtin.import_tasks: users_props.yml

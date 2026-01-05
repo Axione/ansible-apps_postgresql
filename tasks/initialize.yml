@@ -3,7 +3,7 @@
   ansible.builtin.template:
     src: postgres.sh.j2
     dest: /etc/profile.d/postgres.sh
-    mode: 0644
+    mode: '0644'
   notify: Restart postgresql
 
 - name: Ensure PostgreSQL data directory exists.
@@ -12,7 +12,7 @@
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_group }}"
     state: directory
-    mode: 0700
+    mode: '0700'
 
 - name: Check if PostgreSQL database is initialized.
   ansible.builtin.stat:
@@ -27,6 +27,7 @@
   changed_when: false
   # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
   vars:
+    ansible_remote_tmp: "/var/lib/pgsql/.ansible"
     ansible_ssh_pipelining: true
 
 - name: Ensure PostgreSQL log directory exists.
@@ -35,4 +36,4 @@
     owner: "{{ postgresql_user }}"
     group: "{{ postgresql_group }}"
     state: directory
-    mode: 0700
+    mode: '0700'

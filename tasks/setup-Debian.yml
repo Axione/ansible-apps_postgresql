@@ -3,11 +3,19 @@
   ansible.builtin.apt:
     name: "{{ postgresql_python_library }}"
     state: present
+  register: __pkg_result
+  retries: 12
+  delay: 10
+  until: __pkg_result is success
 
 - name: Ensure PostgreSQL packages are installed.
   ansible.builtin.apt:
     name: "{{ postgresql_packages }}"
     state: present
+  register: __pkg_result
+  retries: 12
+  delay: 10
+  until: __pkg_result is success
 
 - name: Ensure all configured locales are present.
   community.general.locale_gen:
