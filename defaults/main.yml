@@ -11,7 +11,7 @@ postgresql_user: postgres
 postgresql_group: postgres
 
 # `md5` or `scram-sha-256` (https://www.postgresql.org/docs/10/auth-methods.html)
-postgresql_auth_method: "{{ ansible_fips  | ternary('scram-sha-256', 'md5') }}"
+postgresql_auth_method: "{{ ansible_facts.fips | ternary('scram-sha-256', 'md5') }}"
 
 postgresql_unix_socket_directories:
   - /var/run/postgresql
@@ -34,8 +34,6 @@ postgresql_hba_entries:
   - {type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: "{{ postgresql_auth_method }}"}
   - {type: host, database: all, user: all, address: '::1/128', auth_method: "{{ postgresql_auth_method }}"}
 
-# force locales when init db, sometimes it doesnt take the system ones
-postgresql_initdb_locales: 'en_US.UTF-8'
 # Debian only. Used to generate the locales used by PostgreSQL databases.
 postgresql_locales:
   - 'en_US.UTF-8'
@@ -60,9 +58,28 @@ postgresql_users: []
 # - name: jdoe #required; the rest are optional
 #   password: # defaults to not set
 #   encrypted: # defaults to not set
-#   priv: # defaults to not set
 #   role_attr_flags: # defaults to not set
-#   db: # defaults to not set
+#   login_db: # defaults to not set
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   state: # defaults to 'present'
+
+# Privileges to configure
+# see https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_privs_module.html#ansible-collections-community-postgresql-postgresql-privs-module
+postgresql_privs: []
+# - login_db: exampledb # database (required)
+#   roles: jdoe  # role(s) the privs apply to (required)
+#   privs: # comma separated list of privileges - defaults to not set
+#   type: # type of database object to set privileges on - defaults to not set
+#   objs: # list of database objects to set privileges on - defaults to not set
+#   schema: # defaults to not set
+#   session_role: # defaults to not set
+#   fail_on_role: # defaults to true
+#   grant_option: # defaults to not set
+#   target_roles: # defaults to not set
 #   login_host: # defaults to 'localhost'
 #   login_password: # defaults to not set
 #   login_user: # defaults to '{{ postgresql_user }}'

@@ -9,13 +9,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Description](#description)
-- [Requirements](#requirements)
-- [Role variables](#role-variables)
-- [Examples](#examples)
-- [License](#license)
-- [Author Information](#author-information)
-
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Description
@@ -28,17 +21,19 @@ none
 
 ## Role variables
 
-See [variables](/defaults/main.yml) for more details.
+See [variables](/defaults/main.yml) for the full list with raw defaults.
 
 ## Examples
 
-        ---
-        - hosts: apps_postgresql
-          become: true
-          become_method: sudo
-          gather_facts: true
-          roles:
-            - role: ansible-apps_postgresql
+```yaml
+---
+- hosts: apps_postgresql
+  become: true
+  become_method: sudo
+  gather_facts: true
+  roles:
+    - role: ansible-apps_postgresql # or lotusnoir.base.apps_postgresql
+```
 
 ## License
 
